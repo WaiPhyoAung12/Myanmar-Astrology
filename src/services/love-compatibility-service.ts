@@ -47,21 +47,33 @@ export function calculateLoveCompatibility(
     firstAstrology.birthWeekday,
     secondAstrology.birthWeekday,
   )
-  const content = createCompatibilityInterpretation(traditionalEvidence)
+  const overallApplicationCompatibilityScore = calculateApplicationCompatibilityScore(traditionalEvidence)
+  const person1 = { personalInformation: firstPerson, astrology: firstAstrology }
+  const person2 = { personalInformation: secondPerson, astrology: secondAstrology }
+  const content = createCompatibilityInterpretation(person1, person2, traditionalEvidence, overallApplicationCompatibilityScore)
 
   return {
-    person1: { personalInformation: firstPerson, astrology: firstAstrology },
-    person2: { personalInformation: secondPerson, astrology: secondAstrology },
+    person1,
+    person2,
     traditionalEvidence,
-    overallApplicationCompatibilityScore: calculateApplicationCompatibilityScore(traditionalEvidence),
+    overallApplicationCompatibilityScore,
     applicationCompatibilityLevel: content.level,
     loveScore: unscoredDimension('love'),
     communicationScore: unscoredDimension('communication'),
     understandingScore: unscoredDimension('understanding'),
     longTermRelationshipScore: unscoredDimension('long-term-relationship'),
+    loveInterpretation: content.love,
+    communicationInterpretation: content.communication,
+    emotionalUnderstandingInterpretation: content.emotionalUnderstanding,
+    trustInterpretation: content.trust,
+    affectionInterpretation: content.affection,
+    conflictResolutionInterpretation: content.conflictResolution,
+    longTermInterpretation: content.longTerm,
     relationshipOverview: content.overview,
     compatibilityStrengths: content.strengths,
     potentialChallenges: content.challenges,
+    recommendedActions: content.recommendedActions,
+    actionsToAvoid: content.actionsToAvoid,
     burmeseExplanation: content.burmeseExplanation,
     scoreDisclosure: APPLICATION_SCORE_DISCLOSURE,
   }

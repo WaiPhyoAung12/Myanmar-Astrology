@@ -15,5 +15,3 @@ export const ASTROLOGY_ASSOCIATIONS = {
 export const INTERPRETATION_UNAVAILABLE_REASON =
   'Personality traits and general readings are not included because no authoritative interpretation corpus has been approved.'
 
-export const MAHABOTE_NOT_CALCULATED_REASON =
-  'TODO: Implement and verify Gregorian-to-Myanmar calendar conversion before applying the approved Mahabote formula.'

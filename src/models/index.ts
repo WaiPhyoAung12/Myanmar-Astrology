@@ -1,4 +1,9 @@
 export type {
+  MahaboteHouseKey,
+  MahaboteHouseName,
+  MahaboteResult,
+} from './mahabote'
+export type {
   AstrologyInterpretation,
   AstrologySignKey,
   FocusPriority,
@@ -10,6 +15,7 @@ export type {
   LocalTimeString,
   PersonalInformation,
 } from './personal-information'
+export type { PersonalLifeReading, ReadingSection } from './personal-life-reading'
 export type {
   AnimalSign,
   AstrologicalDirection,
@@ -18,7 +24,6 @@ export type {
   MyanmarWeekdaySign,
   PlanetaryRuler,
   PersonalAstrologyResult,
-  UnavailableMahabote,
 } from './personal-astrology-result'
 export type {
   ApplicationCompatibilityScore,

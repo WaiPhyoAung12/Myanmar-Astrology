@@ -26,7 +26,7 @@ describe('calculateLoveCompatibility', () => {
     expect(result.person2.astrology.birthWeekday).toBe('Friday')
     expect(result.traditionalEvidence).toBe('documented-friendly')
     expect(result.overallApplicationCompatibilityScore).toBe(75)
-    expect(result.compatibilityStrengths).toHaveLength(1)
+    expect(result.compatibilityStrengths.length).toBeGreaterThan(0)
   })
 
   it('leaves unsupported relationship dimensions unscored', () => {
@@ -57,5 +57,18 @@ describe('calculateLoveCompatibility', () => {
     expect(tuesdayThursday.traditionalEvidence).toBe('documented-friendly')
     expect(tuesdayThursday.overallApplicationCompatibilityScore).toBe(75)
     expect(tuesdaySaturday.relationshipOverview).not.toEqual(tuesdayThursday.relationshipOverview)
+    expect(tuesdaySaturday.communicationInterpretation).not.toBe(tuesdayThursday.communicationInterpretation)
+    expect(tuesdaySaturday.loveInterpretation).not.toBe(tuesdaySaturday.communicationInterpretation)
+  })
+
+  it('keeps approved scores and distinct readings for the requested pair types', () => {
+    const pairs = [
+      calculateLoveCompatibility({ name: 'Tuesday', birthDate: '2024-01-09' }, { name: 'Saturday', birthDate: '2024-01-13' }),
+      calculateLoveCompatibility({ name: 'Tuesday', birthDate: '2024-01-09' }, { name: 'Thursday', birthDate: '2024-01-11' }),
+      calculateLoveCompatibility({ name: 'Monday', birthDate: '2024-01-08' }, { name: 'Friday', birthDate: '2024-01-12' }),
+    ]
+    expect(pairs.map((result) => result.overallApplicationCompatibilityScore)).toEqual([50, 75, 25])
+    expect(new Set(pairs.map((result) => result.communicationInterpretation)).size).toBe(3)
+    for (const result of pairs) expect(result.loveInterpretation).not.toContain('ဤအပိုင်းအတွက် သီးခြားရမှတ်')
   })
 })

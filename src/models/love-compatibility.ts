@@ -39,9 +39,18 @@ export interface LoveCompatibilityResult {
   communicationScore: UnscoredCompatibilityDimension
   understandingScore: UnscoredCompatibilityDimension
   longTermRelationshipScore: UnscoredCompatibilityDimension
+  loveInterpretation: string
+  communicationInterpretation: string
+  emotionalUnderstandingInterpretation: string
+  trustInterpretation: string
+  affectionInterpretation: string
+  conflictResolutionInterpretation: string
+  longTermInterpretation: string
   relationshipOverview: readonly string[]
   compatibilityStrengths: readonly string[]
   potentialChallenges: readonly string[]
+  recommendedActions: readonly string[]
+  actionsToAvoid: readonly string[]
   burmeseExplanation: string
   scoreDisclosure: string
 }

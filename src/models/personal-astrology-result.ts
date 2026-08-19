@@ -1,4 +1,5 @@
 import type { AstrologyInterpretation, AstrologySignKey } from './astrology-interpretation'
+import type { MahaboteResult } from './mahabote'
 
 /** Civil weekdays used by the personal astrology result. */
 export type BirthWeekday = 'Sunday' | 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday'
@@ -15,12 +16,6 @@ export interface AstrologyAssociation {
   direction: AstrologicalDirection
 }
 
-export interface UnavailableMahabote {
-  status: 'not-calculated'
-  value: null
-  reason: string
-}
-
 /** The deterministic astrology details supported by the approved V1 rules. */
 export interface PersonalAstrologyResult {
   birthWeekday: BirthWeekday
@@ -28,5 +23,5 @@ export interface PersonalAstrologyResult {
   association: AstrologyAssociation | null
   resolution: 'resolved' | 'birth-time-required'
   interpretation: AstrologyInterpretation | null
-  mahabote: UnavailableMahabote
+  mahabote: MahaboteResult
 }

@@ -1,67 +1,58 @@
-import type { TraditionalCompatibilityEvidence } from '../models/love-compatibility'
+import { BURMESE_BIRTH_WEEKDAYS, BURMESE_PLANETS, BURMESE_WEEKDAY_SIGNS } from '../data'
+import { MAHABOTE_RELATIONSHIP_PROFILES, WEEKDAY_RELATIONSHIP_PROFILES } from '../data/compatibility-interpretation-profiles'
+import type { ApplicationCompatibilityScore, CompatibilityPersonResult, TraditionalCompatibilityEvidence } from '../models/love-compatibility'
 
 export interface CompatibilityInterpretation {
   level: string
   overview: readonly string[]
   strengths: readonly string[]
   challenges: readonly string[]
+  recommendedActions: readonly string[]
+  actionsToAvoid: readonly string[]
+  love: string
+  communication: string
+  emotionalUnderstanding: string
+  trust: string
+  affection: string
+  conflictResolution: string
+  longTerm: string
   burmeseExplanation: string
 }
 
-/**
- * Composes Burmese evidence explanations only. It does not infer personality,
- * emotion, communication, or future outcomes from a weekday sign.
- */
-export function createCompatibilityInterpretation(
-  evidence: TraditionalCompatibilityEvidence,
-): CompatibilityInterpretation {
-  if (evidence === 'documented-friendly') {
-    return {
-      level: 'ရိုးရာရင်းမြစ်တွင် သင့်မြတ်သောနေ့နံအတွဲ',
-      overview: [
-        'အတည်ပြုထားသော ရိုးရာရင်းမြစ်အရ ဤမွေးနေ့နံနှစ်ခုကို သင့်မြတ်သောအတွဲအဖြစ် မှတ်တမ်းတင်ထားပါသည်။ ယင်းသည် နေ့နံအတွဲဆိုင်ရာ ရိုးရာသတ်မှတ်ချက်ကိုသာ ဖော်ပြခြင်းဖြစ်ပြီး လူနှစ်ဦး၏ စိတ်နေသဘောထား သို့မဟုတ် အချစ်ရေးအနာဂတ်ကို အတိအကျခန့်မှန်းခြင်း မဟုတ်ပါ။',
-        'Application Compatibility Score တွင် ရရှိသော ၇၅ မှတ်သည် ရိုးရာသတ်မှတ်ချက်ကို application က သတိထား၍ အနှစ်ချုပ်ထားသောရမှတ်ဖြစ်ပါသည်။ လက်တွေ့ဆက်ဆံရေးတွင် အပြန်အလှန်နားထောင်ခြင်း၊ ယုံကြည်မှုနှင့် ပွင့်လင်းစွာပြောဆိုခြင်းတို့က ပိုမိုအရေးကြီးပါသည်။',
-      ],
-      strengths: ['ဤမွေးနေ့နံအတွဲကို အတည်ပြုထားသော ရိုးရာရင်းမြစ်တွင် သင့်မြတ်သောအတွဲအဖြစ် ဖော်ပြထားပါသည်။'],
-      challenges: ['ရိုးရာရင်းမြစ်တွင် ချစ်ခြင်း၊ ပြောဆိုဆက်ဆံရေးနှင့် ရေရှည်ဆက်ဆံရေးကို သီးခြားတိုင်းတာထားခြင်း မရှိပါ။'],
-      burmeseExplanation: 'ဤမွေးနေ့နံအတွဲကို အတည်ပြုထားသော ရိုးရာရင်းမြစ်တွင် သင့်မြတ်သောအတွဲအဖြစ် ဖော်ပြထားပါသည်။ အက်ပ်ရမှတ်သည် ရိုးရာရာခိုင်နှုန်း မဟုတ်ပါ။',
-    }
-  }
+function scoreContext(evidence: TraditionalCompatibilityEvidence, score: ApplicationCompatibilityScore): string {
+  if (evidence === 'documented-friendly') return `ရိုးရာနေ့နံမှတ်တမ်းတွင် သင့်မြတ်သောအတွဲဖြစ်ပြီး application ရမှတ် ${score} ရရှိထားပါသည်။`
+  if (evidence === 'documented-hostile') return `ရိုးရာနေ့နံမှတ်တမ်းတွင် ပိုမိုညှိနှိုင်းရန်လိုသောအတွဲဖြစ်ပြီး application ရမှတ် ${score} ရရှိထားပါသည်။ ယင်းက ဆက်ဆံရေးရလဒ်ကို အတိအကျဆုံးဖြတ်ခြင်းမဟုတ်ပါ။`
+  if (evidence === 'wednesday-ambiguity') return `ဗုဒ္ဓဟူးခွဲခြားချက်အတွက် အထောက်အထားမပြည့်စုံသဖြင့် application က ကြားနေ ${score} မှတ်သာထားပါသည်။`
+  return `ဤနေ့နံအတွဲအတွက် ရိုးရာစည်းမျဉ်းမရှိသေးသဖြင့် application က ကြားနေ ${score} မှတ်သာထားပါသည်။`
+}
 
-  if (evidence === 'documented-hostile') {
-    return {
-      level: 'ရိုးရာရင်းမြစ်တွင် မသင့်မြတ်သောနေ့နံအတွဲ',
-      overview: [
-        'အတည်ပြုထားသော ရိုးရာရင်းမြစ်အရ ဤမွေးနေ့နံနှစ်ခုကို မသင့်မြတ်သောအတွဲအဖြစ် မှတ်တမ်းတင်ထားပါသည်။ ဤသတ်မှတ်ချက်သည် ရိုးရာယုံကြည်မှုတစ်ခုသာဖြစ်ပြီး ဆက်ဆံရေးတစ်ခု မကောင်းနိုင်ကြောင်း သေချာပြောဆိုခြင်း မဟုတ်ပါ။',
-        'Application Compatibility Score ၂၅ မှတ်သည် ရိုးရာနေ့နံအတွဲအမျိုးအစားကို application က ဖော်ပြထားခြင်းသာ ဖြစ်ပါသည်။ လက်တွေ့ဘဝတွင် နှစ်ဦးစလုံး၏ နားလည်ညှိနှိုင်းမှုနှင့် ကြိုးစားအားထုတ်မှုက ရလဒ်ကို ပြောင်းလဲစေနိုင်ပါသည်။',
-      ],
-      strengths: [],
-      challenges: ['ဤမွေးနေ့နံအတွဲကို အတည်ပြုထားသော ရိုးရာရင်းမြစ်တွင် မသင့်မြတ်သောအတွဲအဖြစ် ဖော်ပြထားပါသည်။'],
-      burmeseExplanation: 'ဤမွေးနေ့နံအတွဲကို အတည်ပြုထားသော ရိုးရာရင်းမြစ်တွင် မသင့်မြတ်သောအတွဲအဖြစ် ဖော်ပြထားပါသည်။ အက်ပ်ရမှတ်သည် ရိုးရာရာခိုင်နှုန်း မဟုတ်ပါ။',
-    }
-  }
-
-  if (evidence === 'wednesday-ambiguity') {
-    return {
-      level: 'ဗုဒ္ဓဟူးနံဆိုင်ရာ အချက်အလက်မပြည့်စုံသေး',
-      overview: [
-        'ဤအတွဲတွင် ဗုဒ္ဓဟူးနေ့မွေးသူ ပါဝင်နေသော်လည်း အတည်ပြုထားသော လိုက်ဖက်မှုရင်းမြစ်သည် ဗုဒ္ဓဟူးမနက်ပိုင်းနှင့် ရာဟုကို သီးခြားမဖော်ပြထားပါ။ ထို့ကြောင့် ရိုးရာလိုက်ဖက်မှုကို ယုံကြည်စိတ်ချစွာ မသတ်မှတ်နိုင်သေးပါ။',
-        'ပြထားသော ၅၀ မှတ်သည် အလယ်အလတ်လိုက်ဖက်မှုဟု မဆိုလိုပါ။ ရိုးရာအချက်အလက် မပြည့်စုံသေးကြောင်း ဖော်ပြရန် application က အသုံးပြုထားသော အခြေခံရမှတ်သာ ဖြစ်ပါသည်။',
-      ],
-      strengths: [],
-      challenges: ['ရိုးရာရင်းမြစ်တွင် ဗုဒ္ဓဟူးမနက်ပိုင်းနှင့် ရာဟုနေ့နံကို လိုက်ဖက်မှုအတွက် သီးခြားမခွဲထားပါ။'],
-      burmeseExplanation: 'ဗုဒ္ဓဟူးနံအတွက် ရိုးရာလိုက်ဖက်မှုရင်းမြစ်သည် မနက်ပိုင်းနှင့် ရာဟုကို သီးခြားမဖော်ပြထားသဖြင့် ယုံကြည်စိတ်ချစွာ မသတ်မှတ်နိုင်သေးပါ။',
-    }
-  }
-
+/** Deterministic pair composer. Mahabote supplies application context but never alters scoring. */
+export function createCompatibilityInterpretation(first: CompatibilityPersonResult, second: CompatibilityPersonResult, evidence: TraditionalCompatibilityEvidence, score: ApplicationCompatibilityScore): CompatibilityInterpretation {
+  const w1 = WEEKDAY_RELATIONSHIP_PROFILES[first.astrology.birthWeekday]
+  const w2 = WEEKDAY_RELATIONSHIP_PROFILES[second.astrology.birthWeekday]
+  const h1 = MAHABOTE_RELATIONSHIP_PROFILES[first.astrology.mahabote.houseKey]
+  const h2 = MAHABOTE_RELATIONSHIP_PROFILES[second.astrology.mahabote.houseKey]
+  const n1 = first.personalInformation.name
+  const n2 = second.personalInformation.name
+  const context = scoreContext(evidence, score)
+  const sign1 = first.astrology.association ? BURMESE_WEEKDAY_SIGNS[first.astrology.association.weekdaySign] : BURMESE_BIRTH_WEEKDAYS[first.astrology.birthWeekday]
+  const sign2 = second.astrology.association ? BURMESE_WEEKDAY_SIGNS[second.astrology.association.weekdaySign] : BURMESE_BIRTH_WEEKDAYS[second.astrology.birthWeekday]
+  const planet1 = first.astrology.association ? BURMESE_PLANETS[first.astrology.association.planet] : 'ဂြိုဟ်မသတ်မှတ်ရသေး'
+  const planet2 = second.astrology.association ? BURMESE_PLANETS[second.astrology.association.planet] : 'ဂြိုဟ်မသတ်မှတ်ရသေး'
   return {
-    level: 'ရိုးရာလိုက်ဖက်မှုအချက်အလက် မရှိသေး',
-    overview: [
-      'ဤမွေးနေ့နံအတွဲအတွက် အတည်ပြုထားသော ရိုးရာလိုက်ဖက်မှုစည်းမျဉ်း မတွေ့ရှိသေးပါ။ ထို့ကြောင့် သင့်မြတ်သောအတွဲ သို့မဟုတ် မသင့်မြတ်သောအတွဲဟု မခန့်မှန်းထားပါ။',
-      'ပြထားသော ၅၀ မှတ်သည် ပျမ်းမျှလိုက်ဖက်မှုကို မဆိုလိုပါ။ အချက်အလက်မလုံလောက်သေးသည့်အခြေအနေကို application က ကြားနေအမှတ်ဖြင့် ဖော်ပြထားခြင်းသာ ဖြစ်ပါသည်။',
-    ],
-    strengths: [],
-    challenges: ['ဤနေ့နံအတွဲအတွက် အတည်ပြုထားသော ရိုးရာလိုက်ဖက်မှုစည်းမျဉ်း မရှိသေးပါ။'],
-    burmeseExplanation: 'ဤမွေးနေ့နံအတွဲအတွက် အတည်ပြုထားသော ရိုးရာလိုက်ဖက်မှုစည်းမျဉ်း မတွေ့ရှိသေးပါ။ ၅၀ ရမှတ်သည် ပျမ်းမျှလိုက်ဖက်မှုကို မဆိုလိုဘဲ အချက်အလက်မလုံလောက်မှုကို ဖော်ပြပါသည်။',
+    level: evidence === 'documented-friendly' ? 'ရိုးရာအရ သင့်မြတ်မှုရှိသောအတွဲ' : evidence === 'documented-hostile' ? 'ပိုမိုညှိနှိုင်းရန်လိုသောအတွဲ' : 'အပြန်အလှန်နားလည်မှုဖြင့် တည်ဆောက်ရမည့်အတွဲ',
+    overview: [`${n1} (${sign1}၊ ${planet1}၊ မဟာဘုတ် ${first.astrology.mahabote.houseName}) နှင့် ${n2} (${sign2}၊ ${planet2}၊ မဟာဘုတ် ${second.astrology.mahabote.houseName}) တို့ကို တွဲဖက်ကြည့်ထားပါသည်။ ${context}`, `${n1} ဘက်တွင် ${w1.tendency} ${n2} ဘက်တွင် ${w2.tendency} ကွာခြားမှုကို အားဖြည့်နိုင်သည့်ပုံစံအဖြစ် သုံးနိုင်ပါက ဆက်ဆံရေးပိုကောင်းလာနိုင်ပါသည်။`],
+    love: `${n1} သည် ${w1.tendency} ${n2} သည် ${w2.tendency} ချစ်ခင်မှုဖော်ပြပုံ မတူနိုင်သော်လည်း နှစ်ဦးလိုအပ်ချက်ကို တိတိကျကျပြောနိုင်ပါက ပိုမိုနီးကပ်လာနိုင်ပါသည်။`,
+    communication: `${n1} ဘက်တွင် ${w1.communication} ${n2} ဘက်တွင် ${w2.communication} နားလည်မှုလွဲနိုင်သဖြင့် တစ်ဖက်၏အဓိပ္ပာယ်ကို ပြန်အနှစ်ချုပ်မေးပြီးမှ တုံ့ပြန်သင့်ပါသည်။`,
+    emotionalUnderstanding: `${n1} ၏ မဟာဘုတ် ${first.astrology.mahabote.houseName} အရ ${h1.tendency} ${n2} ၏ မဟာဘုတ် ${second.astrology.mahabote.houseName} အရ ${h2.tendency} ခံစားချက်ကို ခန့်မှန်းမနေဘဲ မေးမြန်းနားထောင်ပေးနိုင်ပါက နားလည်မှုတိုးနိုင်ပါသည်။`,
+    trust: `${n1} အတွက် ${h1.tendency} ${n2} အတွက် ${h2.tendency} ကတိအသေးများကိုတည်ခြင်းနှင့် ကိုယ်ပိုင်နယ်နိမိတ်ကို လေးစားခြင်းက ယုံကြည်မှုတည်ဆောက်ရန် အရေးကြီးနိုင်ပါသည်။`,
+    affection: `${n1} နှင့် ${n2} တို့၏ နေ့နံစိတ်နေသဘောထားကြောင့် ကြင်နာမှုဖော်ပြပုံ ကွာနိုင်ပါသည်။ တစ်ဦးက လုပ်ရပ်ဖြင့်၊ တစ်ဦးက စကား သို့မဟုတ် အတူရှိချိန်ဖြင့် တန်ဖိုးထားနိုင်သဖြင့် နှစ်သက်သောပုံစံကို ပြောပြသင့်ပါသည်။`,
+    conflictResolution: `ပြဿနာဖြစ်ချိန်တွင် ${n1} ၏ “${w1.challenge}” နှင့် ${n2} ၏ “${w2.challenge}” တို့က အခြေအနေကို ပိုကြီးစေနိုင်ပါသည်။ ခဏနားပြီး လူကိုမဝေဖန်ဘဲ ဖြစ်ရပ်၊ ခံစားချက်နှင့် လိုအပ်ချက်ကို တစ်ခုစီပြောသင့်ပါသည်။`,
+    longTerm: `${context} ရေရှည်တွင် ${n1} ၏ ${h1.strength} နှင့် ${n2} ၏ ${h2.strength} ကို ပေါင်းစပ်နိုင်ခြင်းက အားသာချက်ဖြစ်နိုင်ပါသည်။ ပူးတွဲရည်မှန်းချက်နှင့် နယ်နိမိတ်တို့ကို ပုံမှန်ပြန်ညှိသင့်ပါသည်။`,
+    strengths: [`${n1} ၏ ${w1.strength} နှင့် ${n2} ၏ ${w2.strength} တို့ကို အပြန်အလှန်အားဖြည့်နိုင်ပါသည်။`, `${h1.strength} နှင့် ${h2.strength} တို့က ပူးတွဲတာဝန်များတွင် အသုံးဝင်နိုင်ပါသည်။`],
+    challenges: [`${n1} ၏ ${w1.challenge} နှင့် ${n2} ၏ ${w2.challenge} တို့ တိုက်ဆိုင်ချိန်တွင် သတိထားသင့်ပါသည်။`, `${h1.challenge} နှင့် ${h2.challenge} တို့ကြောင့် လိုအပ်ချက်ကို မပြောဘဲယူဆမိခြင်းကို ရှောင်သင့်ပါသည်။`],
+    recommendedActions: [`အပတ်စဉ်တစ်ကြိမ် ${n1} နှင့် ${n2} တို့၏ ခံစားချက်နှင့် လိုအပ်ချက်ကို အလှည့်ကျနားထောင်ပါ။`, `${h1.strength} နှင့် ${h2.strength} ကို အသုံးချပြီး ပူးတွဲရည်မှန်းချက်သေးသေးတစ်ခု သတ်မှတ်ပါ။`],
+    actionsToAvoid: [`${n1} ၏ ${w1.challenge} ကို ${n2} ၏ အကျင့်စာရိတ္တအဖြစ် တံဆိပ်မကပ်ပါနှင့်။`, `စိတ်တိုချိန်တွင် ${n2} ၏ ${w2.challenge} ကို ပြန်လည်တိုက်ခိုက်ရန် မသုံးပါနှင့်။`],
+    burmeseExplanation: 'ရိုးရာနေ့နံအထောက်အထားကို application scoring အတွက်သာသုံးပြီး မဟာဘုတ်အိမ်ကို application အဓိပ္ပာယ်ဖွင့်ဆိုမှုအဖြစ်သာ ထည့်ထားပါသည်။ မဟာဘုတ်သည် ရမှတ်ကို မပြောင်းလဲပါ။',
   }
 }

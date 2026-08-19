@@ -5,12 +5,10 @@ import {
   BURMESE_PLANETS,
   BURMESE_WEEKDAY_SIGNS,
 } from '../../data'
-import type { LoveCompatibilityResult, UnscoredCompatibilityDimension } from '../../models'
+import type { LoveCompatibilityResult } from '../../models'
 import { toBurmeseNumerals } from '../../utils'
 
 interface CompatibilityResultProps { result: LoveCompatibilityResult }
-
-const unsupportedDimensionReason = 'ဤအပိုင်းအတွက် သီးခြားရမှတ်တွက်ချက်နိုင်သော အတည်ပြုထားသည့် ရိုးရာစည်းမျဉ်း မရှိသေးပါ။'
 
 function PersonAstrology({ person, label }: { person: LoveCompatibilityResult['person1']; label: string }) {
   const association = person.astrology.association
@@ -22,6 +20,7 @@ function PersonAstrology({ person, label }: { person: LoveCompatibilityResult['p
         <div className="flex justify-between gap-4"><dt className="text-stone-500">မွေးနေ့နံ</dt><dd className="text-right font-semibold text-ink">{BURMESE_BIRTH_WEEKDAYS[person.astrology.birthWeekday]}</dd></div>
         <div className="flex justify-between gap-4"><dt className="text-stone-500">မြန်မာဗေဒင်နေ့နံ</dt><dd className="text-right font-semibold text-ink">{association ? BURMESE_WEEKDAY_SIGNS[association.weekdaySign] : 'မွေးချိန် လိုအပ်ပါသည်'}</dd></div>
         <div className="flex justify-between gap-4"><dt className="text-stone-500">အုပ်စိုးသောဂြိုဟ်</dt><dd className="text-right font-semibold text-ink">{association ? BURMESE_PLANETS[association.planet] : 'မသတ်မှတ်နိုင်သေးပါ'}</dd></div>
+        <div className="flex justify-between gap-4"><dt className="text-stone-500">မဟာဘုတ်အိမ်</dt><dd className="text-right font-semibold text-ink">{person.astrology.mahabote.houseName}</dd></div>
         <div className="flex justify-between gap-4"><dt className="text-stone-500">နေ့နံသတ္တဝါ</dt><dd className="text-right font-semibold text-ink">{association ? BURMESE_ANIMAL_SIGNS[association.animalSign] : 'မသတ်မှတ်နိုင်သေးပါ'}</dd></div>
         <div className="flex justify-between gap-4"><dt className="text-stone-500">အရပ်မျက်နှာ</dt><dd className="text-right font-semibold text-ink">{association ? BURMESE_DIRECTIONS[association.direction] : 'မသတ်မှတ်နိုင်သေးပါ'}</dd></div>
       </dl>
@@ -29,12 +28,11 @@ function PersonAstrology({ person, label }: { person: LoveCompatibilityResult['p
   )
 }
 
-function UnscoredCard({ title, symbol, dimension }: { title: string; symbol: string; dimension?: UnscoredCompatibilityDimension }) {
+function InterpretationCard({ title, symbol, content }: { title: string; symbol: string; content: string }) {
   return (
     <article className="rounded-2xl border border-stone-200 bg-white p-5">
       <div className="flex items-center gap-3"><span aria-hidden="true" className="text-xl text-maroon">{symbol}</span><h3 className="font-semibold leading-7 text-ink">{title}</h3></div>
-      <p className="mt-5 text-lg font-semibold text-stone-500">မတွက်ချက်ထားပါ</p>
-      <p className="mt-2 text-xs leading-6 text-stone-500">{dimension?.reason ?? unsupportedDimensionReason}</p>
+      <p className="mt-4 text-sm leading-7 text-stone-600">{content}</p>
     </article>
   )
 }
@@ -61,27 +59,30 @@ export function CompatibilityResult({ result }: CompatibilityResultProps) {
         <PersonAstrology person={result.person2} label="💜 ဒုတိယတစ်ဦး၏ ဗေဒင်အချက်အလက်" />
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <UnscoredCard title="အချစ်ရေးလိုက်ဖက်မှု" symbol="♡" dimension={result.loveScore} />
-        <UnscoredCard title="ပြောဆိုဆက်ဆံရေး" symbol="◌" dimension={result.communicationScore} />
-        <UnscoredCard title="စိတ်ခံစားမှုနားလည်မှု" symbol="◇" dimension={result.understandingScore} />
-        <UnscoredCard title="ယုံကြည်မှု" symbol="○" />
-        <UnscoredCard title="ချစ်ခင်ကြင်နာမှု" symbol="♡" />
-        <UnscoredCard title="ပြဿနာဖြေရှင်းနိုင်မှု" symbol="⚡" />
-        <UnscoredCard title="ရေရှည်ဆက်ဆံရေး" symbol="○" dimension={result.longTermRelationshipScore} />
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <InterpretationCard title="အချစ်ရေးလိုက်ဖက်မှု" symbol="💗" content={result.loveInterpretation} />
+        <InterpretationCard title="ပြောဆိုဆက်ဆံရေး" symbol="💬" content={result.communicationInterpretation} />
+        <InterpretationCard title="စိတ်ခံစားမှုနားလည်မှု" symbol="💞" content={result.emotionalUnderstandingInterpretation} />
+        <InterpretationCard title="ယုံကြည်မှု" symbol="🤝" content={result.trustInterpretation} />
+        <InterpretationCard title="ချစ်ခင်ကြင်နာမှု" symbol="🌹" content={result.affectionInterpretation} />
+        <InterpretationCard title="ပြဿနာဖြေရှင်းနိုင်မှု" symbol="⚡" content={result.conflictResolutionInterpretation} />
+        <InterpretationCard title="ရေရှည်ဆက်ဆံရေး" symbol="💍" content={result.longTermInterpretation} />
       </div>
 
       <div className="mt-6 grid gap-6 md:grid-cols-2">
         <article className="rounded-2xl border border-stone-200 bg-white p-6">
-          <h3 className="text-lg font-semibold leading-8 text-ink">✨ ရိုးရာရင်းမြစ်တွင် ဖော်ပြထားသော အားသာချက်များ</h3>
-          {result.compatibilityStrengths.length > 0
-            ? <ul className="mt-4 space-y-3 text-sm leading-7 text-stone-600">{result.compatibilityStrengths.map((item) => <li key={item}>— {item}</li>)}</ul>
-            : <p className="mt-4 text-sm leading-7 text-stone-500">ဤအတွဲအတွက် အတည်ပြုထားသော သီးခြားအားသာချက် မရှိသေးပါ။</p>}
+          <h3 className="text-lg font-semibold leading-8 text-ink">✨ Relationship အားသာချက်များ</h3>
+          <ul className="mt-4 space-y-3 text-sm leading-7 text-stone-600">{result.compatibilityStrengths.map((item) => <li key={item}>— {item}</li>)}</ul>
         </article>
         <article className="rounded-2xl border border-stone-200 bg-white p-6">
           <h3 className="text-lg font-semibold leading-8 text-ink">⚠️ သတိထားသင့်သည့် အချက်များ</h3>
           <ul className="mt-4 space-y-3 text-sm leading-7 text-stone-600">{result.potentialChallenges.map((item) => <li key={item}>— {item}</li>)}</ul>
         </article>
+      </div>
+
+      <div className="mt-6 grid gap-6 md:grid-cols-2">
+        <article className="rounded-2xl border border-stone-200 bg-white p-6"><h3 className="text-lg font-semibold leading-8 text-ink">📈 နှစ်ဦးလုပ်ဆောင်သင့်သည့်အရာများ</h3><ul className="mt-4 space-y-3 text-sm leading-7 text-stone-600">{result.recommendedActions.map((item) => <li key={item}>— {item}</li>)}</ul></article>
+        <article className="rounded-2xl border border-stone-200 bg-white p-6"><h3 className="text-lg font-semibold leading-8 text-ink">🚫 နှစ်ဦးရှောင်ကြဉ်သင့်သည့်အရာများ</h3><ul className="mt-4 space-y-3 text-sm leading-7 text-stone-600">{result.actionsToAvoid.map((item) => <li key={item}>— {item}</li>)}</ul></article>
       </div>
 
       <article className="mt-6 rounded-2xl border border-saffron/25 bg-[#fff9ef] p-6 sm:p-8">

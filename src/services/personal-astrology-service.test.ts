@@ -21,12 +21,21 @@ describe('calculatePersonalAstrology', () => {
     expect(result.resolution).toBe('birth-time-required')
     expect(result.signKey).toBeNull()
     expect(result.interpretation).toBeNull()
-    expect(result.mahabote.status).toBe('not-calculated')
+    expect(result.mahabote).toEqual({ myanmarYear: 1385, remainder: 2, houseKey: 'yaza', houseName: 'ရာဇ' })
   })
 
   it('selects the normalized interpretation key for Tuesday', () => {
     const result = calculatePersonalAstrology({ name: 'Test', birthDate: '2024-01-09' })
     expect(result.signKey).toBe('tuesday')
     expect(result.interpretation?.classification).toBe('application-interpretive-guidance')
+  })
+
+  it('calculates Mahabote independently of the Wednesday morning/Rahu split', () => {
+    const morning = calculatePersonalAstrology({ name: 'Test', birthDate: '2024-01-10', birthTime: '08:00' })
+    const rahu = calculatePersonalAstrology({ name: 'Test', birthDate: '2024-01-10', birthTime: '18:00' })
+
+    expect(morning.association?.weekdaySign).toBe('Wednesday Morning')
+    expect(rahu.association?.weekdaySign).toBe('Wednesday Afternoon (Rahu)')
+    expect(morning.mahabote).toEqual(rahu.mahabote)
   })
 })
